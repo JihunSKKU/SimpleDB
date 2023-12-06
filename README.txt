@@ -43,12 +43,12 @@ II. Installation Instructions:
 
   2) To install the SimpleDB engine, you must add the simpledb folder to 
      your classpath. To do so using Eclipse, first create a new project; 
-     call it ÒSimpleDB EngineÓ. Then from the operating system, copy the 
+     call it ï¿½SimpleDB Engineï¿½. Then from the operating system, copy the 
      simpledb folder to the src folder of the project. Finally, refresh 
      the project from Eclipse, using the refresh command in the File menu.
 
   3) The simpleclient folder contains example programs that call the SimpleDB 
-     engine. You should create a new project for them; call it ÒSimpleDB ClientsÓ. 
+     engine. You should create a new project for them; call it ï¿½SimpleDB Clientsï¿½. 
      To ensure that the example programs can find the SimpleDB engine code, you 
      should add the SimpleDB Engine project to the build path of SimpleDB Clients. 
      Then use the operating system to copy the contents of simpleclient into the 
