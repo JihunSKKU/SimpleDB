@@ -17,7 +17,7 @@ import simpledb.file.BlockId;
 class LockTable {
    private static final long MAX_TIME = 10000; // 10 seconds
    
-   private Map<BlockId,Integer> locks = new HashMap<BlockId,Integer>();
+   private Map<BlockId, List<Integer>> locks = new HashMap<>();
    
    /**
     * Grant an SLock on the specified block.
@@ -28,16 +28,26 @@ class LockTable {
     * amount of time (currently 10 seconds),
     * then an exception is thrown.
     * @param blk a reference to the disk block
+    * @param txnum the ID of the transaction 
     */
-   public synchronized void sLock(BlockId blk) {
+   public synchronized void sLock(BlockId blk, int txnum) {
       try {
          long timestamp = System.currentTimeMillis();
-         while (hasXlock(blk) && !waitingTooLong(timestamp))
+         while (hasXlock(blk) && !waitingTooLong(timestamp)) {
+            checkAbort(blk, txnum);
             wait(MAX_TIME);
+         }
+         checkAbort(blk, txnum);
+
          if (hasXlock(blk))
             throw new LockAbortException();
-         int val = getLockVal(blk);  // will not be negative
-         locks.put(blk, val+1);
+
+         List<Integer> txList = locks.get(blk);
+         if (txList == null) {
+            txList = new ArrayList<>();
+            locks.put(blk, txList);
+         }
+         txList.add(txnum);
       }
       catch(InterruptedException e) {
          throw new LockAbortException();
@@ -53,51 +63,64 @@ class LockTable {
     * amount of time (currently 10 seconds),
     * then an exception is thrown.
     * @param blk a reference to the disk block
+    * @param txnum the ID of the transaction
     */
-   synchronized void xLock(BlockId blk) {
+   synchronized void xLock(BlockId blk, int txnum) {
       try {
          long timestamp = System.currentTimeMillis();
-         while (hasOtherSLocks(blk) && !waitingTooLong(timestamp))
+         while ((hasOtherSLocks(blk) || hasXlock(blk)) && !waitingTooLong(timestamp)) {
+            checkAbort(blk, txnum);
             wait(MAX_TIME);
-         if (hasOtherSLocks(blk))
+         }
+         checkAbort(blk, txnum);
+
+         if (hasOtherSLocks(blk) || hasXlock(blk))
             throw new LockAbortException();
-         locks.put(blk, -1);
+
+         List<Integer> txList = new ArrayList<>();
+         txList.add(-txnum);
+         locks.put(blk, txList);
       }
       catch(InterruptedException e) {
          throw new LockAbortException();
       }
    }
    
+   private void checkAbort(BlockId blk, int txnum) {
+      List<Integer> txList = locks.get(blk);
+      if (txList != null && !txList.isEmpty() && txList.get(0) < txnum) {
+         throw new LockAbortException();
+      }
+   }
+
    /**
     * Release a lock on the specified block.
     * If this lock is the last lock on that block,
     * then the waiting transactions are notified.
     * @param blk a reference to the disk block
     */
-   synchronized void unlock(BlockId blk) {
-      int val = getLockVal(blk);
-      if (val > 1)
-         locks.put(blk, val-1);
-      else {
-         locks.remove(blk);
-         notifyAll();
+   synchronized void unlock(BlockId blk, int txnum) {
+      List<Integer> txList = locks.get(blk);
+      if (txList != null) {
+         txList.remove(Integer.valueOf(txnum));
+         if (txList.isEmpty()) {
+            locks.remove(blk);
+            notifyAll();
+         }
       }
    }
    
    private boolean hasXlock(BlockId blk) {
-      return getLockVal(blk) < 0;
+      List<Integer> txList = locks.get(blk);
+      return txList != null && txList.get(0) < 0;
    }
-   
+
    private boolean hasOtherSLocks(BlockId blk) {
-      return getLockVal(blk) > 1;
+      List<Integer> txList = locks.get(blk);
+      return txList != null && txList.get(0) > 1;
    }
    
    private boolean waitingTooLong(long starttime) {
       return System.currentTimeMillis() - starttime > MAX_TIME;
-   }
-   
-   private int getLockVal(BlockId blk) {
-      Integer ival = locks.get(blk);
-      return (ival == null) ? 0 : ival.intValue();
    }
 }
