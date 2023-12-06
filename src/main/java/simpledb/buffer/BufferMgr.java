@@ -26,7 +26,7 @@ public class BufferMgr {
       this.unpinnedBuffers = new LinkedList<>();
       this.allocatedBuffers = new HashMap<>();
       numAvailable = numbuffs;
-      
+
       for (int i = 0; i < numbuffs; i++) {
          Buffer buffer = new Buffer(fm, lm, i);
          unpinnedBuffers.add(buffer);
@@ -115,11 +115,8 @@ public class BufferMgr {
          if (buff == null)
             return null;
 
-         BlockId prevBlk = buff.block();
+         allocatedBuffers.remove(buff.block());
          buff.assignToBlock(blk);
-         if (prevBlk != null) {
-            allocatedBuffers.remove(prevBlk);
-         }
          allocatedBuffers.put(blk, buff);
       }
       unpinnedBuffers.remove(buff);
