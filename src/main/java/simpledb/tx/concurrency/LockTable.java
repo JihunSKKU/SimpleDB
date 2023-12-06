@@ -37,10 +37,10 @@ class LockTable {
             checkAbort(blk, txnum);
             wait(MAX_TIME);
          }
-         checkAbort(blk, txnum);
 
-         if (hasXlock(blk))
+         if (hasXlock(blk)) {
             throw new LockAbortException();
+         }
 
          List<Integer> txList = locks.get(blk);
          if (txList == null) {
@@ -68,13 +68,12 @@ class LockTable {
    synchronized void xLock(BlockId blk, int txnum) {
       try {
          long timestamp = System.currentTimeMillis();
-         while ((hasOtherSLocks(blk) || hasXlock(blk)) && !waitingTooLong(timestamp)) {
+         while ((hasOtherSLocks(blk, txnum) || hasXlock(blk)) && !waitingTooLong(timestamp)) {
             checkAbort(blk, txnum);
             wait(MAX_TIME);
          }
-         checkAbort(blk, txnum);
 
-         if (hasOtherSLocks(blk) || hasXlock(blk))
+         if (hasOtherSLocks(blk, txnum) || hasXlock(blk))
             throw new LockAbortException();
 
          List<Integer> txList = new ArrayList<>();
@@ -88,7 +87,7 @@ class LockTable {
    
    private void checkAbort(BlockId blk, int txnum) {
       List<Integer> txList = locks.get(blk);
-      if (txList != null && !txList.isEmpty() && txList.get(0) < txnum) {
+      if (txList != null && !txList.isEmpty() && Math.abs(txList.get(0)) < txnum) {         
          throw new LockAbortException();
       }
    }
@@ -103,6 +102,7 @@ class LockTable {
       List<Integer> txList = locks.get(blk);
       if (txList != null) {
          txList.remove(Integer.valueOf(txnum));
+         txList.remove(Integer.valueOf(-txnum));
          if (txList.isEmpty()) {
             locks.remove(blk);
             notifyAll();
@@ -115,9 +115,9 @@ class LockTable {
       return txList != null && txList.get(0) < 0;
    }
 
-   private boolean hasOtherSLocks(BlockId blk) {
+   private boolean hasOtherSLocks(BlockId blk, int txnum) {
       List<Integer> txList = locks.get(blk);
-      return txList != null && txList.get(0) > 1;
+      return txList != null && txList.get(0) > 0 && txList.get(0) != txnum;
    }
    
    private boolean waitingTooLong(long starttime) {
