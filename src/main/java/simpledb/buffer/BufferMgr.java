@@ -139,4 +139,32 @@ public class BufferMgr {
          return buff;
       return null;
    }
+
+   /**
+    * Prints the status of each buffer in the allocated map,
+    * plus the IDs of each buffer in the unpinned list.
+    */
+   public synchronized void printStatus() {
+      System.out.println("Allocated Buffers:");
+      for (int i = 0; i < bufferpool.length; i++) {
+         Buffer buff = bufferpool[i];
+         if (buff.block() != null) {
+            System.out.print("Buffer " + i + ": ");
+            System.out.print(buff.block() + " ");
+            if (buff.isPinned())
+               System.out.println("pinned");
+            else
+               System.out.println("unpinned");
+         }
+      }
+
+      System.out.print("Unpinned Buffers in LRU order: ");
+      for (int i = 0; i < bufferpool.length; i++) {
+         Buffer buff = bufferpool[i];
+         if (!buff.isPinned()) {
+            System.out.print(i + " ");
+         }
+      }
+      System.out.println();
+   }
 }

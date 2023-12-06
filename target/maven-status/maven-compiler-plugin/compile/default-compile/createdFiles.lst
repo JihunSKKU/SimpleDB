@@ -20,6 +20,7 @@ simpledb/file/RandomAccessFileTest.class
 simpleclient/network/CreateStudentDB.class
 simpledb/index/IndexRetrievalTest.class
 simpledb/materialize/MergeJoinPlan.class
+simpledb/tx/concurrency/TestDeadlock$B.class
 simpleclient/network/FindMajors.class
 simpledb/index/Index.class
 simpledb/tx/concurrency/ConcurrencyMgr.class
@@ -72,6 +73,7 @@ simpledb/plan/OptimizedProductPlan.class
 simpledb/jdbc/network/RemoteDriverImpl.class
 simpledb/tx/recovery/CommitRecord.class
 simpledb/jdbc/StatementAdapter.class
+simpledb/buffer/TestBufMgr.class
 simpledb/parse/TokenizerTest.class
 simpledb/log/LogTest.class
 simpledb/tx/recovery/StartRecord.class
@@ -88,6 +90,7 @@ simpledb/materialize/GroupByPlan.class
 simpledb/parse/Lexer.class
 FindMajors.class
 simpledb/parse/ModifyData.class
+simpledb/tx/concurrency/TestDeadlock$A.class
 simpledb/tx/ConcurrencyTest$A.class
 simpledb/record/Layout.class
 simpledb/jdbc/network/RemoteResultSet.class
@@ -116,6 +119,7 @@ simpledb/plan/MultiTablePlanTest.class
 simpledb/tx/recovery/SetIntRecord.class
 simpledb/tx/recovery/RollbackRecord.class
 simpledb/jdbc/embedded/EmbeddedDriver.class
+simpledb/tx/concurrency/TestDeadlock.class
 simpledb/tx/recovery/LogRecord.class
 simpleclient/embedded/ChangeMajor.class
 simpledb/parse/BadSyntaxException.class
@@ -130,6 +134,7 @@ simpledb/tx/BufferList.class
 simpledb/index/btree/BTreeDir.class
 simpledb/index/btree/DirEntry.class
 simpledb/jdbc/embedded/EmbeddedStatement.class
+simpledb/tx/concurrency/TestDeadlock$C.class
 simpledb/tx/concurrency/LockTable.class
 simpledb/metadata/ViewMgr.class
 simpledb/materialize/RecordComparator.class
