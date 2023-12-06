@@ -20,16 +20,23 @@ public class Buffer {
    private int pins = 0;  /* the number of times the buffer has been pinned */
    private int txnum = -1;  /* dirty flag. The ID of the modifying transaction for this buffer */
    private int lsn = -1;   /* log sequence number */
+   private int id;   /* ID of the buffer */
 
    /**
     * Constructor 
     */
-   public Buffer(FileMgr fm, LogMgr lm) {
+   public Buffer(FileMgr fm, LogMgr lm, int id) {
       this.fm = fm;
       this.lm = lm;
+      this.id = id;
       contents = new Page(fm.blockSize());
    }
    
+   /* Getter function */
+   public int getId() {
+      return id;
+   }
+
    /**
     * Returns the contents (i.e., page) of this buffer
     */
