@@ -1,5 +1,6 @@
                       THE SIMPLEDB DATABASE SYSTEM
                   General Information and Instructions
+---
 ## 1. Task 1: Improving Buffer Manager
 
 SimpleDB 버퍼 매니저에는 두 가지 주요 효율성 문제가 있습니다:
@@ -134,6 +135,8 @@ mvn compile
 cd target
 java -cp ./classes simpledb.tx.concurrency.TestDeadlock
 ```
+
+--- 
 
 This document contains the following sections:
     * Release Notes
