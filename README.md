@@ -1,6 +1,6 @@
                       THE SIMPLEDB DATABASE SYSTEM
                   General Information and Instructions
-1. Task 1: Improving Buffer Manager
+## 1. Task 1: Improving Buffer Manager
 
 SimpleDB 버퍼 매니저에는 두 가지 주요 효율성 문제가 있습니다:
 
@@ -89,7 +89,7 @@ Buffer 3: [file test, block 3] pinned
 Unpinned Buffers in LRU order: 0 4
 ```
 
-# 2. Task 2: Wait-Die Scheme
+## 2. Task 2: Wait-Die Scheme
 
 SimpleDB는 현재 데드락을 감지하기 위해 타임아웃을 사용합니다. 이를 대기-죽음 전략을 사용하도록 변경하세요. 코드는 LockTable 클래스를 다음과 같이 수정해야 합니다:
 
