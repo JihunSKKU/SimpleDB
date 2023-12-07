@@ -117,7 +117,7 @@ class LockTable {
 
    private boolean hasOtherSLocks(BlockId blk, int txnum) {
       List<Integer> txList = locks.get(blk);
-      return txList != null && txList.get(0) > 0 && txList.get(0) != txnum;
+      return txList != null && txList.get(0) > 0 && Math.abs(txList.get(0)) != txnum;
    }
    
    private boolean waitingTooLong(long starttime) {
